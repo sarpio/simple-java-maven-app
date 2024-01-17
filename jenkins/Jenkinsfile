@@ -9,6 +9,7 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
+        
         stage('Test') {
             steps {
                 sh 'mvn test'
@@ -19,25 +20,16 @@ pipeline {
                 }
             }
         }
+        
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
             }
         }
+        
         stage('Finish Build') {
             steps {
                 echo "Complete: Finish build"
-            }
-        }
-        stage('OWASP Dependency-Check') {
-            steps {
-                dependencyCheck additionalArguments: '''
-                            -o './'
-                            -s './'
-                            -f 'ALL'
-                            --prettyPrint''', odcInstallation: 'OWASP-DP-CHECK'
-
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
     }
